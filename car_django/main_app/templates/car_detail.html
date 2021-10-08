@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <h3>{{carmanufacturer.name}}</h3>
+    <p>{{carmanufacturer.information}}</p>
+    <img src="{{carmanufacturer.logo}}" alt="{{carmanufacturer.name}}" />
+    <br>
+    {% comment %} carmanufacturer is the lower case NAME of the model to use in dango {% endcomment %}
+    <a href="{% url 'car_update' carmanufacturer.pk %}"><button>Update Car</button></a>
+     <a href="{% url 'car_delete' carmanufacturer.pk %}"><button>Delete Car</button></a>
+    {% comment %} <a href="{% url 'car_update' carmanufacturer.pk %}">Update Car</a> {% endcomment %}
+  <div>
+    {% comment %} <a href="{% url 'spice_delete' spices.pk %}">Delete Spice</a>
+</div> {% endcomment %}
+<!-- In the div labeled buttons is where our edit button is -->
+{% endblock %}

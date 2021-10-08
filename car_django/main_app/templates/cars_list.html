@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% comment %} for head title tags and helping us with SEO {% endcomment %}
+{% block title %}Cars helo{% endblock  %}
+
+{% block content %}
+
+<h1 class="title pt-5">{{header}}</h1>
+<form class="mb-5" method="get">
+  <div class="field has-addons">
+    <div class="control">
+      <!--  Our input will search by name of artist  -->
+      <input class="input" type="text" name="name" placeholder="name" />
+    </div>
+    <div class="control">
+      <input class="button is-success" type="submit" value="Search" />
+    </div>
+  </div>
+  <!--  This anchor tag will redirect back to cars list without a query param -->
+  <a class="button is-dark" href="{% url 'cars_list' %}">Clear Search</a>
+  <a class="button is-dark" href="{% url 'car_create' %}">Add car</a>
+</form>
+
+<div class="gallery">
+  {% for each_car in all_Cars %}
+ <a href="{% url 'car_detail' each_car.pk %}">
+    <div class="card">
+      <div class="card-image">
+        <figure class="image is-square">
+          <img src="{{each_car.logo}}" alt="{{each_car.name}}" />
+        </figure>
+      </div>
+      <div class="card-header">
+        <p class="card-header-title">{{each_car.name}}</p>
+      </div>
+    </div>
+  </a>
+	{% empty %}
+  <article class="message">
+    <div class="message-header">
+      <p>No cars Available</p>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+
+  {% comment %} <div>
+       {% for each_car in all_Cars %}
+        <h3><a href="{% url 'car_detail' each_car.pk %}">{{each_car.name}}</a></h3>
+        <p>{{each_car.information}}</p>
+         <img src="{{each_car.logo}}" alt="{{each_car.name}}" />
+        <p>{{each_car.name}}</p>
+        {% endfor %}
+    </div> {% endcomment %}
+
+{% endblock %}
