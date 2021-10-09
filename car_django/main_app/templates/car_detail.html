@@ -10,6 +10,52 @@
      <a href="{% url 'car_delete' carmanufacturer.pk %}"><button>Delete Car</button></a>
     {% comment %} <a href="{% url 'car_update' carmanufacturer.pk %}">Update Car</a> {% endcomment %}
   <div>
+
+<form class="mb-5" action="{% url 'carmodel_create' carmanufacturer.pk %}" method="post">
+      {% csrf_token %}
+      <div class="field has-addons">
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            name="modelname"
+            placeholder="Model"
+            required
+          />
+        </div>
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            name="image"
+            placeholder="Image"
+          />
+        </div>
+        <div class="control">
+          <input class="button is-primary" type="submit" value="Add Model" />
+        </div>
+      </div>
+    </form>
+
+  <!-- Display each car model below -->
+    {% for car in carmanufacturer.carmodels.all %}
+    <div class="car">
+      <br>
+       <span>{{forloop.counter}}</span>
+      <span><h1><b>{{car.modelname}}</b></h1></span>
+     <img src="{{car.image}}" alt="{{carmanufacturer.name}}" />
+      <br>
+    </div>
+     <a href="{% url 'carmodel_delete' car.pk %}"><button>Delete Model</button></a>
+		{% empty %}
+    <article class="message">
+      <div class="message-header">
+        <p>No models Available</p>
+      </div>
+    </article>
+    {% endfor %}
+  
+<!--  above about section  -->
     {% comment %} <a href="{% url 'spice_delete' spices.pk %}">Delete Spice</a>
 </div> {% endcomment %}
 <!-- In the div labeled buttons is where our edit button is -->

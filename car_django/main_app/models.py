@@ -12,3 +12,13 @@ class CarManufacturer(models.Model):
 
     class Meta:
         ordering = ['name']
+
+#for One to many model
+class Carmodel(models.Model):
+
+    modelname = models.CharField(max_length=150)
+    image = models.CharField(max_length=250)
+    make = models.ForeignKey(CarManufacturer, on_delete=models.CASCADE, related_name="carmodels")
+
+    def __str__(self):
+        return self.modelname

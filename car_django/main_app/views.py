@@ -1,11 +1,11 @@
-from django.shortcuts import render
-from django.views.generic.base import TemplateView
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic.base import TemplateView, View
 # This will import the class we are extending 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic import DetailView
 
 
-from . models import CarManufacturer
+from . models import CarManufacturer ,Carmodel
 
 # Create your views here.
 class AllCars(TemplateView):
@@ -59,4 +59,26 @@ class CarUpdate(UpdateView):
 class CarDelete(DeleteView):
     model = CarManufacturer
     template_name = "car_delete.html"
+    success_url = "/cars/" #redirect path
+    
+    
+class CarmodelCreate(View):
+    def post(self, request, pk):
+        modelname = request.POST.get("modelname")
+        image = request.POST.get("image")
+        make = CarManufacturer.objects.get(pk=pk)
+        Carmodel.objects.create(modelname=modelname, image=image, make=make)
+        return redirect('car_detail', pk=pk)
+    
+# class CarmodelDelete(DeleteView):
+#     def delete(self,pk):
+#         context ={}
+#         # fetch the object related to passed id
+#         obj = get_object_or_404(Carmodel, pk = pk)
+#         obj.delete()
+#         return redirect('car_detail', pk=pk)
+
+class CarmodelDelete(DeleteView):
+    model = Carmodel
+    template_name = "carmodel_delete.html"
     success_url = "/cars/" #redirect path
