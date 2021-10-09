@@ -18,5 +18,8 @@ urlpatterns = [
     #######################
     path('cars/<int:pk>/carmodels/new/',views.CarmodelCreate.as_view(), name="carmodel_create"),
     
-    path('cars/<int:pk>/carmodels/delete/',views.CarmodelDelete.as_view(), name="carmodel_delete"),
+    path('cars/carmodels/<int:pk>/delete/',views.CarmodelDelete.as_view(), name="carmodel_delete"),
+    
+    ################ Sign up
+    path('accounts/signup/', views.Signup.as_view(), name="signup")
 ]

@@ -3,7 +3,13 @@ from django.views.generic.base import TemplateView, View
 # This will import the class we are extending 
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic import DetailView
-
+#### For Login
+from django.urls import reverse
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+# For Authorization
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from . models import CarManufacturer ,Carmodel
 
@@ -21,6 +27,7 @@ class About(TemplateView):
 #         self.Information = Information
         
 #controller
+@method_decorator(login_required, name='dispatch')
 class CarsList(TemplateView):
     template_name = "cars_list.html"
 
@@ -31,10 +38,10 @@ class CarsList(TemplateView):
         # If a query exists we will filter by name 
         if name != None:
             # .filter is the sql WHERE statement and name__icontains is doing a search for any name that contains the query param
-            context["all_Cars"] = CarManufacturer.objects.filter(name__icontains=name)
+            context["all_Cars"] = CarManufacturer.objects.filter(name__icontains=name,user=self.request.user)
             context["header"] = f"Searching for {name}"
         else:
-            context["all_Cars"] = CarManufacturer.objects.all()
+            context["all_Cars"] = CarManufacturer.objects.filter(user=self.request.user)
             context["header"] = "Top USA Car Manufacturer"
         return context
     
@@ -42,7 +49,15 @@ class AddCar_Create(CreateView):
     model = CarManufacturer
     fields = ['name', 'logo', 'information']
     template_name = "car_create.html"
-    success_url = "/cars/"  #redirect path
+    # success_url = "/cars/"  #redirect path
+    # This is our new method that will add the user into our submitted form
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(AddCar_Create, self).form_valid(form)
+
+    def get_success_url(self):
+        print(self.kwargs)
+        return reverse('car_detail', kwargs={'pk': self.object.pk})
     
     
 class CarDetail(DetailView):
@@ -61,7 +76,7 @@ class CarDelete(DeleteView):
     template_name = "car_delete.html"
     success_url = "/cars/" #redirect path
     
-    
+######################################################    
 class CarmodelCreate(View):
     def post(self, request, pk):
         modelname = request.POST.get("modelname")
@@ -82,3 +97,21 @@ class CarmodelDelete(DeleteView):
     model = Carmodel
     template_name = "carmodel_delete.html"
     success_url = "/cars/" #redirect path
+    
+    
+class Signup(View):
+    # show a form to fill out
+    def get(self, request):
+        form = UserCreationForm()
+        context = {"form": form}
+        return render(request, "registration/signup.html", context)
+    # on form submit validate the form and login the user.
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("cars_list")
+        else:
+            context = {"form": form}
+            return render(request, "registration/signup.html", context)
